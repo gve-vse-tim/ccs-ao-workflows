@@ -1,0 +1,211 @@
+{
+  "workflow": {
+    "unique_name": "definition_workflow_01FBQU7DNT6XO7au8430pUwAOFA4zVrP9iK",
+    "name": "Demonstrate compound filters broken",
+    "title": "Demonstrate compound filters broken",
+    "type": "generic.workflow",
+    "base_type": "workflow",
+    "variables": [
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "input",
+          "name": "input_vpc_id",
+          "type": "datatype.string",
+          "is_required": true
+        },
+        "unique_name": "variable_workflow_01FBQZ9J1UTLL4MGQivJWbYphsigo43VVOo",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "input",
+          "name": "input_subnet_name",
+          "type": "datatype.string",
+          "is_required": true
+        },
+        "unique_name": "variable_workflow_01FBR2QIVQB9Y5KEwJnNLzQq8I2jmbIYi3p",
+        "object_type": "variable_workflow"
+      }
+    ],
+    "properties": {
+      "atomic": {
+        "is_atomic": false
+      },
+      "delete_workflow_instance": false,
+      "display_name": "Demonstrate compound filters broken",
+      "runtime_user": {
+        "override_target_runtime_user": false,
+        "specify_on_workflow_start": false,
+        "target_default": true
+      },
+      "target": {
+        "target_type": "aws.endpoint",
+        "specify_on_workflow_start": true
+      }
+    },
+    "object_type": "definition_workflow",
+    "actions": [
+      {
+        "unique_name": "definition_activity_01FBS1NIQB6CY3EUeP7rpntCfmPrnIA191L",
+        "name": "Parallel Block",
+        "title": "Parallel Block",
+        "type": "logic.parallel",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "display_name": "Parallel Block",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_01FBS1NUXZ384328PZ0e7kRlqm3i2NmMPdY",
+            "name": "Parallel Branch",
+            "title": "Single Filter",
+            "type": "logic.parallel_block",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "display_name": "Single Filter",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_01FBQWQ55WRZI253PIq74wuJ6UpFumIonpA",
+                "name": "Describe Subnets",
+                "title": "Filter by Subnet Name",
+                "type": "aws.describe_subnets",
+                "base_type": "activity",
+                "properties": {
+                  "action_timeout": 180,
+                  "continue_on_failure": false,
+                  "display_name": "Filter by Subnet Name",
+                  "filters": [
+                    {
+                      "name": "tag:Name",
+                      "value": "$workflow.definition_workflow_01FBQU7DNT6XO7au8430pUwAOFA4zVrP9iK.input.variable_workflow_01FBR2QIVQB9Y5KEwJnNLzQq8I2jmbIYi3p$"
+                    }
+                  ],
+                  "runtime_user": {
+                    "override_target_runtime_user": false,
+                    "target_default": true
+                  },
+                  "skip_execution": false,
+                  "target": {
+                    "override_workflow_target": false,
+                    "override_workflow_target_group_criteria": false,
+                    "use_workflow_target": true,
+                    "use_workflow_target_group": false
+                  }
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_01FBS1O354C4M2h6zo0OzxcjLiZocMx5X0f",
+            "name": "Parallel Branch",
+            "title": "Single Filter",
+            "type": "logic.parallel_block",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "display_name": "Single Filter",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_01FBS2KBHYJ2545OnWmlR2CMVcnM8Cq5ZSa",
+                "name": "Describe Subnets",
+                "title": "Filter by VPC ID",
+                "type": "aws.describe_subnets",
+                "base_type": "activity",
+                "properties": {
+                  "action_timeout": 180,
+                  "continue_on_failure": false,
+                  "display_name": "Filter by VPC ID",
+                  "filters": [
+                    {
+                      "name": "vpc-id",
+                      "value": "$workflow.definition_workflow_01FBQU7DNT6XO7au8430pUwAOFA4zVrP9iK.input.variable_workflow_01FBQZ9J1UTLL4MGQivJWbYphsigo43VVOo$"
+                    }
+                  ],
+                  "runtime_user": {
+                    "override_target_runtime_user": false,
+                    "target_default": true
+                  },
+                  "skip_execution": false,
+                  "target": {
+                    "override_workflow_target": false,
+                    "override_workflow_target_group_criteria": false,
+                    "use_workflow_target": true,
+                    "use_workflow_target_group": false
+                  }
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_01FBS3104ERHU1PNqNfouGS6xhYNJjLxYYS",
+            "name": "Parallel Branch",
+            "title": "Compound Filter",
+            "type": "logic.parallel_block",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "display_name": "Compound Filter",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_01FBS31CWM5IH1RxYrepzv0H1TnVpnyOGZ9",
+                "name": "Describe Subnets",
+                "title": "Filter by VPC ID and Subnet Name",
+                "type": "aws.describe_subnets",
+                "base_type": "activity",
+                "properties": {
+                  "action_timeout": 180,
+                  "continue_on_failure": false,
+                  "display_name": "Filter by VPC ID and Subnet Name",
+                  "filters": [
+                    {
+                      "name": "vpc-id",
+                      "value": "$workflow.definition_workflow_01FBQU7DNT6XO7au8430pUwAOFA4zVrP9iK.input.variable_workflow_01FBQZ9J1UTLL4MGQivJWbYphsigo43VVOo$"
+                    },
+                    {
+                      "name": "tag:Name",
+                      "value": "$workflow.definition_workflow_01FBQU7DNT6XO7au8430pUwAOFA4zVrP9iK.input.variable_workflow_01FBR2QIVQB9Y5KEwJnNLzQq8I2jmbIYi3p$"
+                    }
+                  ],
+                  "runtime_user": {
+                    "override_target_runtime_user": false,
+                    "target_default": true
+                  },
+                  "skip_execution": false,
+                  "target": {
+                    "override_workflow_target": false,
+                    "override_workflow_target_group_criteria": false,
+                    "use_workflow_target": true,
+                    "use_workflow_target_group": false
+                  }
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "categories": [
+      "category_1BMfMXSnJMyt5Ihqi7rWJr5N8cf"
+    ]
+  }
+}
