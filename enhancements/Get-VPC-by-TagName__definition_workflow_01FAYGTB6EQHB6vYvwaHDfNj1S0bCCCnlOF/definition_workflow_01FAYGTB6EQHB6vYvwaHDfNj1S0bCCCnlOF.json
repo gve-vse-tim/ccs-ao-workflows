@@ -1,0 +1,273 @@
+{
+  "workflow": {
+    "unique_name": "definition_workflow_01FAYGTB6EQHB6vYvwaHDfNj1S0bCCCnlOF",
+    "name": "Get VPC Info By Name",
+    "title": "Get VPC Info By Name",
+    "type": "generic.workflow",
+    "base_type": "workflow",
+    "variables": [
+      {
+        "schema_id": "datatype.integer",
+        "properties": {
+          "value": 0,
+          "scope": "output",
+          "name": "count_of_vpcs",
+          "type": "datatype.integer",
+          "is_required": false
+        },
+        "unique_name": "variable_workflow_01FBOYUYIAX5P4gF9ZVhwceVOAz2gQdJjyK",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "*",
+          "scope": "input",
+          "name": "input_vpc_name",
+          "type": "datatype.string",
+          "is_required": true
+        },
+        "unique_name": "variable_workflow_01FAZGI120JWX6H1YHZxAPDr1i3XBRpZVyO",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "output",
+          "name": "vpc_id",
+          "type": "datatype.string",
+          "is_required": false
+        },
+        "unique_name": "variable_workflow_01FBAZZSD2MTF5KsXAusyPyg18V77Vxjl1v",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "output",
+          "name": "cidr_block",
+          "type": "datatype.string",
+          "is_required": false
+        },
+        "unique_name": "variable_workflow_01FBB09A59W1212ys1ZwykbDyE0lnfQSnKe",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.boolean",
+        "properties": {
+          "value": false,
+          "scope": "output",
+          "name": "found_vpc",
+          "type": "datatype.boolean",
+          "is_required": false
+        },
+        "unique_name": "variable_workflow_01FBOL65KS18E6FdXAvShYoB0OZWC910UG7",
+        "object_type": "variable_workflow"
+      }
+    ],
+    "properties": {
+      "atomic": {
+        "atomic_group": "AWS Service",
+        "is_atomic": true
+      },
+      "delete_workflow_instance": true,
+      "description": "Searches for VPC by name, returns vpc_id and cidr_block",
+      "display_name": "Get VPC Info By Name",
+      "runtime_user": {
+        "override_target_runtime_user": false,
+        "specify_on_workflow_start": false,
+        "target_default": true
+      },
+      "target": {
+        "target_type": "aws.endpoint",
+        "specify_on_workflow_start": true
+      }
+    },
+    "object_type": "definition_workflow",
+    "actions": [
+      {
+        "unique_name": "definition_activity_01FAZD44ZUFUD0JpaOyjzDJ1QY6dWmSzU6H",
+        "name": "Describe VPCs",
+        "title": "Get List of VPCs",
+        "type": "aws.describe_vpcs",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "continue_on_failure": false,
+          "description": "Describe VPCs Adapter",
+          "display_name": "Get List of VPCs",
+          "filters": [
+            {
+              "name": "tag:Name",
+              "value": "$workflow.definition_workflow_01FAYGTB6EQHB6vYvwaHDfNj1S0bCCCnlOF.input.variable_workflow_01FAZGI120JWX6H1YHZxAPDr1i3XBRpZVyO$"
+            }
+          ],
+          "runtime_user": {
+            "override_target_runtime_user": false,
+            "target_default": true
+          },
+          "skip_execution": false,
+          "target": {
+            "override_workflow_target": false,
+            "override_workflow_target_group_criteria": false,
+            "use_workflow_target": true,
+            "use_workflow_target_group": false
+          }
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01FBOXH46N44P0MMNlLtOmQWKSS1HQyXrcT",
+        "name": "For Each",
+        "title": "Process VPC Results",
+        "type": "logic.for_each",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "display_name": "Process VPC Results",
+          "skip_execution": false,
+          "source_array": "$activity.definition_activity_01FAZD44ZUFUD0JpaOyjzDJ1QY6dWmSzU6H.output.vpcs$"
+        },
+        "object_type": "definition_activity",
+        "actions": [
+          {
+            "unique_name": "definition_activity_01FBOZ1HNHR9I3ZmWXolmuhTkYkQaGIORnO",
+            "name": "Set Variables",
+            "title": "Count Results",
+            "type": "core.set_multiple_variables",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "display_name": "Count Results",
+              "skip_execution": false,
+              "variables_to_update": [
+                {
+                  "variable_to_update": "$workflow.definition_workflow_01FAYGTB6EQHB6vYvwaHDfNj1S0bCCCnlOF.output.variable_workflow_01FBOYUYIAX5P4gF9ZVhwceVOAz2gQdJjyK$",
+                  "variable_value_new": "$workflow.definition_workflow_01FAYGTB6EQHB6vYvwaHDfNj1S0bCCCnlOF.output.variable_workflow_01FBOYUYIAX5P4gF9ZVhwceVOAz2gQdJjyK$+1"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_01FBOKM8VMUHW7IlX67vdZYDA0i95imD2MS",
+        "name": "Condition Block",
+        "title": "Evaluate Results",
+        "type": "logic.if_else",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "display_name": "Evaluate Results",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_01FBOKMPRII551r0Off4uUQazX2VyOZaFBF",
+            "name": "Condition Branch",
+            "title": "Single VPC Exists",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": "$workflow.definition_workflow_01FAYGTB6EQHB6vYvwaHDfNj1S0bCCCnlOF.output.variable_workflow_01FBOYUYIAX5P4gF9ZVhwceVOAz2gQdJjyK$",
+                "operator": "eq",
+                "right_operand": 1
+              },
+              "continue_on_failure": false,
+              "display_name": "Single VPC Exists",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_01FBB1622H9072vIAZnRuYRmkmEssPqkWfk",
+                "name": "Set Variables",
+                "title": "Save VPC ID, CIDR Block",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "display_name": "Save VPC ID, CIDR Block",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_01FAYGTB6EQHB6vYvwaHDfNj1S0bCCCnlOF.output.variable_workflow_01FBAZZSD2MTF5KsXAusyPyg18V77Vxjl1v$",
+                      "variable_value_new": "$activity.definition_activity_01FAZD44ZUFUD0JpaOyjzDJ1QY6dWmSzU6H.output.vpcs[0].vpc_id$"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_01FAYGTB6EQHB6vYvwaHDfNj1S0bCCCnlOF.output.variable_workflow_01FBB09A59W1212ys1ZwykbDyE0lnfQSnKe$",
+                      "variable_value_new": "$activity.definition_activity_01FAZD44ZUFUD0JpaOyjzDJ1QY6dWmSzU6H.output.vpcs[0].cidr_block$"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_01FAYGTB6EQHB6vYvwaHDfNj1S0bCCCnlOF.output.variable_workflow_01FBOL65KS18E6FdXAvShYoB0OZWC910UG7$",
+                      "variable_value_new": true
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_01FBOKMVYEPF34V22euoPFFoq01UHZTkITr",
+            "name": "Condition Branch",
+            "title": "Single VPC Does Not Exist",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": "$workflow.definition_workflow_01FAYGTB6EQHB6vYvwaHDfNj1S0bCCCnlOF.output.variable_workflow_01FBOYUYIAX5P4gF9ZVhwceVOAz2gQdJjyK$",
+                "operator": "ne",
+                "right_operand": 1
+              },
+              "continue_on_failure": false,
+              "display_name": "Single VPC Does Not Exist",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_01FBONO5WEWFS0HpEJJxsvpRSflxT7UW7QZ",
+                "name": "Set Variables",
+                "title": "Leave Blank",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "display_name": "Leave Blank",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_01FAYGTB6EQHB6vYvwaHDfNj1S0bCCCnlOF.output.variable_workflow_01FBOL65KS18E6FdXAvShYoB0OZWC910UG7$",
+                      "variable_value_new": false
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "categories": [
+      "category_01FAYIIVCZVH01wgS2GRmsliJaTDOQUULtA"
+    ]
+  },
+  "categories": {
+    "category_01FAYIIVCZVH01wgS2GRmsliJaTDOQUULtA": {
+      "unique_name": "category_01FAYIIVCZVH01wgS2GRmsliJaTDOQUULtA",
+      "name": "clus20",
+      "title": "clus20",
+      "type": "basic.category",
+      "base_type": "category",
+      "category_type": "custom",
+      "object_type": "category"
+    }
+  }
+}
