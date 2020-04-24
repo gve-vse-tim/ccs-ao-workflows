@@ -1,0 +1,336 @@
+{
+  "workflow": {
+    "unique_name": "definition_workflow_01FBUK7XOH0FZ3lXZyLltRIfrzp2w4z2oJW",
+    "name": "Get Subnet Info By Name",
+    "title": "Get Subnet Info By Name",
+    "type": "generic.workflow",
+    "base_type": "workflow",
+    "variables": [
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "*",
+          "scope": "input",
+          "name": "input_subnet_name",
+          "type": "datatype.string",
+          "is_required": true
+        },
+        "unique_name": "variable_workflow_01FBULFZW75MG51wyUoS1XwvyEhxjxYs5M0",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "output",
+          "name": "output_subnet_id",
+          "type": "datatype.string",
+          "is_required": false
+        },
+        "unique_name": "variable_workflow_01FBUMZ29WKJ25N7aVGNleM4qFp6fyFHFFA",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.integer",
+        "properties": {
+          "value": 0,
+          "scope": "output",
+          "name": "count_of_subnets",
+          "type": "datatype.integer",
+          "is_required": false
+        },
+        "unique_name": "variable_workflow_01FBUOS66BUXR5SHvDpFK8QLRZrafS1XFx0",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "*",
+          "scope": "input",
+          "name": "input_vpc_id",
+          "type": "datatype.string",
+          "is_required": true
+        },
+        "unique_name": "variable_workflow_01FBUV0HKPNSB2pctBuzHMN7nuTbvLpEQaE",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.boolean",
+        "properties": {
+          "value": false,
+          "scope": "output",
+          "name": "found_subnet",
+          "type": "datatype.boolean",
+          "is_required": false
+        },
+        "unique_name": "variable_workflow_01FBV15ZQWWYA2q8oRhcT1QKI9LL6x9HEC4",
+        "object_type": "variable_workflow"
+      }
+    ],
+    "properties": {
+      "atomic": {
+        "atomic_group": "AWS Service",
+        "is_atomic": true
+      },
+      "delete_workflow_instance": true,
+      "display_name": "Get Subnet Info By Name",
+      "runtime_user": {
+        "override_target_runtime_user": false,
+        "specify_on_workflow_start": false,
+        "target_default": true
+      },
+      "target": {
+        "target_type": "aws.endpoint",
+        "specify_on_workflow_start": true
+      }
+    },
+    "object_type": "definition_workflow",
+    "actions": [
+      {
+        "unique_name": "definition_activity_01FBUKF70TXAC7dEwxNRAp2v9y3IFDScrpD",
+        "name": "Describe Subnets",
+        "title": "Get List of Subnets By Name",
+        "type": "aws.describe_subnets",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "continue_on_failure": false,
+          "description": "AWS Describe Subnets ",
+          "display_name": "Get List of Subnets By Name",
+          "filters": [
+            {
+              "name": "tag:Name",
+              "value": "$workflow.definition_workflow_01FBUK7XOH0FZ3lXZyLltRIfrzp2w4z2oJW.input.variable_workflow_01FBULFZW75MG51wyUoS1XwvyEhxjxYs5M0$"
+            }
+          ],
+          "runtime_user": {
+            "override_target_runtime_user": false,
+            "target_default": true
+          },
+          "skip_execution": false,
+          "target": {
+            "override_workflow_target": false,
+            "override_workflow_target_group_criteria": false,
+            "use_workflow_target": true,
+            "use_workflow_target_group": false
+          }
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01FBUO1ZV9PRP4pZtoVTrrPXSgAkyshxKby",
+        "name": "For Each",
+        "title": "Process Subnet Results",
+        "type": "logic.for_each",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "display_name": "Process Subnet Results",
+          "skip_execution": false,
+          "source_array": "$activity.definition_activity_01FBUKF70TXAC7dEwxNRAp2v9y3IFDScrpD.output.subnets$"
+        },
+        "object_type": "definition_activity",
+        "actions": [
+          {
+            "unique_name": "definition_activity_01FBUW6MHZ4IJ5Tabdvrz5TW7xu58Iiqamu",
+            "name": "Condition Block",
+            "title": "Validate VPC ID",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "display_name": "Validate VPC ID",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_01FBUW705WAS52xinnPBNbKLWTkysYeMNlI",
+                "name": "Condition Branch",
+                "title": "VPC ID Matches",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "condition": {
+                    "left_operand": "$activity.definition_activity_01FBUO1ZV9PRP4pZtoVTrrPXSgAkyshxKby.input.source_array[@].vpc_id$",
+                    "operator": "eq",
+                    "right_operand": "$workflow.definition_workflow_01FBUK7XOH0FZ3lXZyLltRIfrzp2w4z2oJW.input.variable_workflow_01FBUV0HKPNSB2pctBuzHMN7nuTbvLpEQaE$"
+                  },
+                  "continue_on_failure": false,
+                  "display_name": "VPC ID Matches",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_01FBUNRD7FX5T2YU5x4F2n34ts3vLHi8qGG",
+                    "name": "Set Variables",
+                    "title": "Count Subnets",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "display_name": "Count Subnets",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_01FBUK7XOH0FZ3lXZyLltRIfrzp2w4z2oJW.output.variable_workflow_01FBUOS66BUXR5SHvDpFK8QLRZrafS1XFx0$",
+                          "variable_value_new": "$workflow.definition_workflow_01FBUK7XOH0FZ3lXZyLltRIfrzp2w4z2oJW.output.variable_workflow_01FBUOS66BUXR5SHvDpFK8QLRZrafS1XFx0$+1"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_01FBUXPEUFA4F3E02lisKrkBsBUi0D56OnQ",
+                "name": "Condition Branch",
+                "title": "VPC ID Mismatch",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "condition": {
+                    "left_operand": "$activity.definition_activity_01FBUO1ZV9PRP4pZtoVTrrPXSgAkyshxKby.input.source_array[@].vpc_id$",
+                    "operator": "ne",
+                    "right_operand": "$workflow.definition_workflow_01FBUK7XOH0FZ3lXZyLltRIfrzp2w4z2oJW.input.variable_workflow_01FBUV0HKPNSB2pctBuzHMN7nuTbvLpEQaE$"
+                  },
+                  "continue_on_failure": false,
+                  "display_name": "VPC ID Mismatch",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_01FBUY3PY3R4O6KHJJ01j84WhndOEpIzM3M",
+                    "name": "Continue",
+                    "title": "Continue",
+                    "type": "logic.continue",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "display_name": "Continue",
+                      "skip_execution": false
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_01FBUPDLQQQ9470PgLNjWFgbZEtND8EmjwT",
+        "name": "Condition Block",
+        "title": "Evaluate Results",
+        "type": "logic.if_else",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "display_name": "Evaluate Results",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_01FBUPE792RMC4v88eADjCifwCS3BRTAg6z",
+            "name": "Condition Branch",
+            "title": "Single Subnet Returned",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": "$workflow.definition_workflow_01FBUK7XOH0FZ3lXZyLltRIfrzp2w4z2oJW.output.variable_workflow_01FBUOS66BUXR5SHvDpFK8QLRZrafS1XFx0$",
+                "operator": "eq",
+                "right_operand": 1
+              },
+              "continue_on_failure": false,
+              "display_name": "Single Subnet Returned",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_01FBUQT7ZI2585dn9N25aqiPBf9SUkt3pk1",
+                "name": "Set Variables",
+                "title": "Set Subnet ID",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "display_name": "Set Subnet ID",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_01FBUK7XOH0FZ3lXZyLltRIfrzp2w4z2oJW.output.variable_workflow_01FBUMZ29WKJ25N7aVGNleM4qFp6fyFHFFA$",
+                      "variable_value_new": "$activity.definition_activity_01FBUKF70TXAC7dEwxNRAp2v9y3IFDScrpD.output.subnets[0].subnet_id$"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_01FBUK7XOH0FZ3lXZyLltRIfrzp2w4z2oJW.output.variable_workflow_01FBV15ZQWWYA2q8oRhcT1QKI9LL6x9HEC4$",
+                      "variable_value_new": true
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_01FBUPEN0DRAN1z7lGejGtTuYq6psBJx4bp",
+            "name": "Condition Branch",
+            "title": "Single Subnet Not Returned",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": "$workflow.definition_workflow_01FBUK7XOH0FZ3lXZyLltRIfrzp2w4z2oJW.output.variable_workflow_01FBUOS66BUXR5SHvDpFK8QLRZrafS1XFx0$",
+                "operator": "ne",
+                "right_operand": 1
+              },
+              "continue_on_failure": false,
+              "display_name": "Single Subnet Not Returned",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_01FBV0PULK1D16jK6LHvyCbuwK31G1YfVh9",
+                "name": "Set Variables",
+                "title": "Leave Blank",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "display_name": "Leave Blank",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_01FBUK7XOH0FZ3lXZyLltRIfrzp2w4z2oJW.output.variable_workflow_01FBV15ZQWWYA2q8oRhcT1QKI9LL6x9HEC4$",
+                      "variable_value_new": false
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "categories": [
+      "category_01FAYIIVCZVH01wgS2GRmsliJaTDOQUULtA"
+    ]
+  },
+  "categories": {
+    "category_01FAYIIVCZVH01wgS2GRmsliJaTDOQUULtA": {
+      "unique_name": "category_01FAYIIVCZVH01wgS2GRmsliJaTDOQUULtA",
+      "name": "clus20",
+      "title": "clus20",
+      "type": "basic.category",
+      "base_type": "category",
+      "category_type": "custom",
+      "object_type": "category"
+    }
+  }
+}
